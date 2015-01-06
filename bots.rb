@@ -65,7 +65,7 @@ class MyBot < Ebooks::Bot
 
   def on_mention(tweet)
     # Reply to a mention
-    reply(tweet, meta(tweet).reply_prefix + "Sorry, I don't know how to talk.")
+    #reply(tweet, meta(tweet).reply_prefix + "Sorry, I don't know how to talk.")
   end
 
   def on_timeline(tweet)
