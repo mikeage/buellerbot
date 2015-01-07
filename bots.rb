@@ -13,6 +13,7 @@ class MyBot < Ebooks::Bot
     @last = 0
     @shortsuffix = " // Bueller?"
     @suffix = " // Anyone? Bueller?"
+    @tweeted = false
   end
 
   def check_anyone(tweet)
@@ -27,6 +28,7 @@ class MyBot < Ebooks::Bot
       if rt.length <= 140
         #print "RTing |#{rt}|\n"
         reply(tweet, rt)
+        @tweeted = true
       else
         #print "Skipping |#{rt}| from #{tweet.text} because it's too long\n"
       end
@@ -42,13 +44,16 @@ class MyBot < Ebooks::Bot
   def do_search
     #print "Searching...\n"
     self.twitter.search("anyone?", result_type: "recent", since_id: @last).take(100).each do |tweet|
-      check_anyone(tweet)
+      if @tweeted == false
+        check_anyone(tweet)
+      end
     end
   end
 
   def on_startup
     do_search()
-    scheduler.every '10s' do
+    scheduler.every '1m' do
+      @tweeted = false
       do_search()
     end
   end
