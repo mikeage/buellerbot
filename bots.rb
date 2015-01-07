@@ -13,14 +13,9 @@ class MyBot < Ebooks::Bot
     @last = 0
     @shortsuffix = " // Bueller?"
     @suffix = " // Anyone? Bueller?"
-    @skip = 0
   end
 
   def check_anyone(tweet)
-    if @skip > 0
-      return
-    end
-
     text = tweet.text.gsub("\n", " ")
     if text =~ /anyone\? *$/im
       #print "#{tweet.user.screen_name}: #{tweet.text}\n"
@@ -31,12 +26,7 @@ class MyBot < Ebooks::Bot
       end
       if rt.length <= 140
         #print "RTing |#{rt}|\n"
-        begin
-          reply(tweet, rt)
-        rescue Twitter::Error::Forbidden
-          print "Throttling...\n"
-          @skip = 60
-        end
+        reply(tweet, rt)
       else
         #print "Skipping |#{rt}| from #{tweet.text} because it's too long\n"
       end
@@ -51,7 +41,6 @@ class MyBot < Ebooks::Bot
 
   def do_search
     #print "Searching...\n"
-    @skip -= 1 unless @skip == 0
     self.twitter.search("anyone?", result_type: "recent", since_id: @last).take(100).each do |tweet|
       check_anyone(tweet)
     end
