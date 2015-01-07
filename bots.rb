@@ -1,3 +1,5 @@
+# vim: expandtab shiftwidth=2
+
 require 'twitter_ebooks'
 
 require 'dotenv'  
